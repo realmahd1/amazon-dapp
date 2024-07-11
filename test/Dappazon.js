@@ -63,4 +63,45 @@ describe("Dappazon", () => {
       expect(tranasction).to.emit(dappazon, "List");
     })
   })
+
+  describe('Buying', () => {
+    let tranasction;
+
+    beforeEach(async () => {
+      // List an item
+      tranasction = await dappazon.connect(deployer).list(
+        ID,
+        NAME,
+        CATEGORY,
+        IMAGE,
+        COST,
+        RATING,
+        STOCK
+      )
+      await tranasction.wait();
+
+      // Buy an item
+      tranasction = await dappazon.connect(buyer).buy(ID, { value: COST });
+    })
+
+    it("Updates the contract balance", async () => {
+      const result = await ethers.provider.getBalance(dappazon.address);
+      expect(result).to.equal(COST);
+    })
+
+    it("Updates buyer's order count", async () => {
+      const result = await dappazon.orderCount(buyer.address);
+      expect(result).to.equal(1);
+    })
+
+    it("Adds the order", async () => {
+      const order = await dappazon.orders(buyer.address, 1);
+      expect(order.time).to.be.greaterThan(0);
+      expect(order.item.name).to.equal(NAME);
+    })
+
+    it("Emits Buy event", () => {
+      expect(tranasction).to.emit(dappazon, "Buy");
+    })
+  })
 })
