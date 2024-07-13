@@ -1,4 +1,5 @@
 # Dappazon
+<img src="./public/Dappazon-flow.png" alt="flow">
 
 ## Technology Stack & Tools
 
