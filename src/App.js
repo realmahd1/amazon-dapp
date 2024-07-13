@@ -10,6 +10,7 @@ import Dappazon from './abis/Dappazon.json';
 // Config
 import config from './config.json';
 import Section from './components/Section';
+import Product from './components/Product';
 
 function App() {
   const [account, setAccount] = useState(null);
@@ -18,6 +19,9 @@ function App() {
   const [electronics, setElectronics] = useState(null);
   const [clothing, setClothing] = useState(null);
   const [toys, setToys] = useState(null);
+
+  const [item, setItem] = useState(null);
+  const [toggle, setToggle] = useState(false)
 
   const loadBlockchainData = async () => {
     // Connect to blockchain
@@ -40,7 +44,7 @@ function App() {
     const electronics = items.filter((item) => item.category === 'electronics')
     const clothing = items.filter((item) => item.category === 'clothing')
     const toys = items.filter((item) => item.category === 'toys')
-    
+
     setClothing(clothing);
     setElectronics(electronics);
     setToys(toys);
@@ -50,8 +54,9 @@ function App() {
     loadBlockchainData()
   }, [])
 
-  const togglePop = () => {
-
+  const togglePop = (item) => {
+    setItem(item);
+    toggle ? setToggle(false) : setToggle(true);
   }
 
   return (
@@ -65,6 +70,10 @@ function App() {
           <Section title={"Electronics & Gadgets"} items={electronics} togglePop={togglePop} />
           <Section title={"Toys & Gaming"} items={toys} togglePop={togglePop} />
         </>
+      )}
+
+      {toggle && (
+        <Product item={item} provider={provider} account={account} dappazon={dappazon} togglePop={togglePop} />
       )}
     </div>
   );
